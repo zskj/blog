@@ -12,6 +12,7 @@ import (
 	"blog/pkg/setting"
 	"blog/routers"
 )
+
 // @title Blog API
 // @version 1.0
 // @description  Blog
@@ -25,9 +26,9 @@ import (
 // @BasePath /
 
 // @securityDefinitions.apikey ApiKeyAuth
-// @in query
-// @name token
-func main(){
+// @in header
+// @name Authorization
+func main() {
 	//f, _ := os.Create("gin.log")
 	//gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 
@@ -49,11 +50,11 @@ func main(){
 
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
-	<- quit
+	<-quit
 
 	log.Println("Shutdown Server ...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := s.Shutdown(ctx); err != nil {
 		log.Fatal("Server Shutdown:", err)

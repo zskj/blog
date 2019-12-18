@@ -1,11 +1,13 @@
 package jwt
 
 import (
-	"blog/pkg/e"
-	"blog/pkg/util"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
+	"strings"
+
+	"blog/pkg/e"
+	"blog/pkg/util"
 )
 
 func JWT() gin.HandlerFunc {
@@ -14,16 +16,21 @@ func JWT() gin.HandlerFunc {
 		var data interface{}
 
 		code = e.SUCCESS
-		token := c.Query("token")
-		if token == "" {
+		Authorization := c.GetHeader("Authorization")
+		token := strings.Split(Authorization , " ")
+		//token := c.Query("token")
+		if Authorization == "" {
 			code = e.INVALID_PARAMS
 		} else {
-			claims, err := util.ParseToken(token)
+			_, err := util.ParseToken(token[0])
 			if err != nil {
-				code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
-			} else if time.Now().Unix() > claims.ExpiresAt {
-				code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
-			}
+				switch err.(*jwt.ValidationError).Errors {
+				case jwt.ValidationErrorExpired:
+					code = e.ERROR_AUTH_CHECK_TOKEN_TIMEOUT
+				default:
+					code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
+				}
+			} 
 		}
 
 		if code != e.SUCCESS {

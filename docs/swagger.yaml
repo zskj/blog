@@ -72,7 +72,7 @@ paths:
       - 登录管理
 securityDefinitions:
   ApiKeyAuth:
-    in: query
-    name: token
+    in: header
+    name: Authorization
     type: apiKey
 swagger: "2.0"
