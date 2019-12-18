@@ -51,7 +51,7 @@ $ go run main.go
 
 > http://127.0.0.1:8000/swagger/index.html
 
-![demo](docs/screenshots/sewagger.png)
+![demo](https://github.com/zskj/blog/blob/master/docs/screenshots/swagger.png)
 
 
 
