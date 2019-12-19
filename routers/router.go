@@ -50,7 +50,7 @@ func InitRouter() *gin.Engine {
 			//删除
 			tag.DELETE(":id", v1.DeleteTag)
 		}
-		//文章
+		//注册文章路由
 		RegisterArticleRouter(apiv1)
 	}
 

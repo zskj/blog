@@ -52,7 +52,27 @@ $ go run main.go
 > http://127.0.0.1:8000/swagger/index.html
 
 ![demo](https://github.com/zskj/blog/blob/master/docs/screenshots/swagger.png)
-
+## 项目结构概览
+```
+├── conf 配置文件
+├── docs：api文档swagger
+    └── sql：sql执行语句  
+├── middleware：中间件
+    └── jwt：认证中间件
+├── model：引用数据库模型
+├── pkg：第三方包和公共模块
+│   ├── app：gin engine
+│   ├── e： 错误编码和错误信息
+│   ├── logging：日志模块
+│   ├── setting：go-ini包
+│   └── util：工具库 
+└── routers：路由处理
+     └── api：controller 逻辑梳理
+         └── v1：controller逻辑处理 
+└── service：逻辑处理
+└── runtime：日志，文件缓存存放
+└── main.go：入口文件 
+```
 
 
 
