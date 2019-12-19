@@ -37,6 +37,7 @@ func InitRouter() *gin.Engine {
 
 	apiv1.Use(jwt.JWT()) //token 验证
 	{
+
 		//标签
 		tag := apiv1.Group("/tags")
 		{
@@ -50,20 +51,7 @@ func InitRouter() *gin.Engine {
 			tag.DELETE(":id", v1.DeleteTag)
 		}
 		//文章
-		article := apiv1.Group("/articles")
-		{
-			//列表
-			article.GET("", v1.GetArticles)
-			//文章ById
-			article.GET(":id", v1.GetArticle)
-			//新建
-			article.POST("", v1.AddArticle)
-			//更新ById
-			article.PUT(":id", v1.EditArticle)
-			//删除ById
-			article.DELETE(":id", v1.DeleteArticle)
-		}
-
+		RegisterArticleRouter(apiv1)
 	}
 
 	r.GET("/test", func(context *gin.Context) {
