@@ -16,8 +16,8 @@ func JWT() gin.HandlerFunc {
 		var data interface{}
 
 		code = e.SUCCESS
-		Authorization := c.GetHeader("Authorization")
-		token := strings.Split(Authorization , " ")
+		Authorization := c.GetHeader("Authorization") //在header中存放token
+		token := strings.Split(Authorization, " ")
 		//token := c.Query("token")
 		if Authorization == "" {
 			code = e.INVALID_PARAMS
@@ -30,14 +30,14 @@ func JWT() gin.HandlerFunc {
 				default:
 					code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
 				}
-			} 
+			}
 		}
 
 		if code != e.SUCCESS {
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"code" : code,
-				"msg" : e.GetMsg(code),
-				"data" : data,
+				"code": code,
+				"msg":  e.GetMsg(code),
+				"data": data,
 			})
 
 			c.Abort()
