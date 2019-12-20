@@ -2,6 +2,10 @@ basePath: /
 definitions:
   models.AuthSwag:
     properties:
+      captcha_code:
+        type: string
+      captcha_id:
+        type: string
       password:
         type: string
       username:
@@ -97,7 +101,7 @@ paths:
           description: Bad Request
           schema:
             type: string
-      summary: 获取登录token 信息
+      summary: 用户登录 获取token 信息
       tags:
       - 登录管理
 securityDefinitions:

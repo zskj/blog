@@ -115,7 +115,7 @@
                 "tags": [
                     "登录管理"
                 ],
-                "summary": "获取登录token 信息",
+                "summary": "用户登录 获取token 信息",
                 "parameters": [
                     {
                         "description": "body",
@@ -148,6 +148,12 @@
         "models.AuthSwag": {
             "type": "object",
             "properties": {
+                "captcha_code": {
+                    "type": "string"
+                },
+                "captcha_id": {
+                    "type": "string"
+                },
                 "password": {
                     "type": "string"
                 },

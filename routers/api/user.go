@@ -2,6 +2,7 @@ package api
 
 import (
 	"blog/service/user_service"
+	"github.com/dchest/captcha"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
@@ -13,13 +14,14 @@ import (
 )
 
 type auth struct {
-	Id       int    `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Role     int    `json:"role_id"`
+	Id          int    `json:"id"`
+	Username    string `json:"username"`
+	Password    string `json:"password"`
+	CaptchaCode string `json:"captcha_code"`
+	CaptchaId   string `json:"captcha_id"`
 }
 
-// @Summary   获取登录token 信息
+// @Summary   用户登录 获取token 信息
 // @Tags 登录管理
 // @Accept json
 // @Produce  json
@@ -28,8 +30,7 @@ type auth struct {
 // @Failure 400 {string} gin.Context.JSON
 // @Router /auth  [POST]
 func Auth(c *gin.Context) {
-
-	appG := app.Gin{C:c}
+	appG := app.Gin{C: c}
 	var reqInfo auth
 	err := c.BindJSON(&reqInfo)
 	if err != nil {
@@ -46,14 +47,18 @@ func Auth(c *gin.Context) {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, valid.Errors)
 		return
 	}
+	if !captcha.VerifyString(reqInfo.CaptchaId, reqInfo.CaptchaCode) {
+		appG.Response(http.StatusInternalServerError, e.ERROR_CAPTCHA_FAIL, valid.Errors)
+		return
+	}
 
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
 	}
 
-	    authService := user_service.User{Username: reqInfo.Username, Password: reqInfo.Password}
-		isExist , err := authService.Check()
+	authService := user_service.User{Username: reqInfo.Username, Password: reqInfo.Password}
+	isExist, err := authService.Check()
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -72,5 +77,4 @@ func Auth(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
 		"token": token,
 	})
-
 }
