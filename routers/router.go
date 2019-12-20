@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"blog/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -17,8 +18,8 @@ func InitRouter() *gin.Engine {
 
 	r := gin.New()
 
-	r.Use(gin.Logger()) //日志
-	r.Use(Cors())       // 跨域请求
+	r.Use(gin.Logger())      //日志
+	r.Use(middleware.Cors()) // 跨域请求
 
 	r.Use(gin.Recovery())
 	gin.SetMode(setting.RunMode)
