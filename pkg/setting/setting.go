@@ -1,4 +1,5 @@
 package setting
+
 import (
 	"log"
 	"time"
@@ -11,19 +12,26 @@ var (
 
 	RunMode string
 
-	HTTPPort int
-	ReadTimeout time.Duration
+	HTTPPort     int
+	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 
-	PageSize int
+	PageSize  int
 	JwtSecret string
 )
 
 func init() {
+
 	var err error
+	var err1 error
+
 	Cfg, err = ini.Load("conf/app.ini")
 	if err != nil {
-		log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
+		//如果是test修改测试路径
+		Cfg, err1 = ini.Load("../conf/app.ini")
+		if err1 != nil {
+			log.Fatalf("Fail to parse 'conf/app.ini': %v", err)
+		}
 	}
 
 	LoadBase()
@@ -43,7 +51,7 @@ func LoadServer() {
 
 	HTTPPort = sec.Key("HTTP_PORT").MustInt(8000)
 	ReadTimeout = time.Duration(sec.Key("READ_TIMEOUT").MustInt(60)) * time.Second
-	WriteTimeout =  time.Duration(sec.Key("WRITE_TIMEOUT").MustInt(60)) * time.Second
+	WriteTimeout = time.Duration(sec.Key("WRITE_TIMEOUT").MustInt(60)) * time.Second
 }
 
 func LoadApp() {

@@ -56,9 +56,9 @@ $ go run main.go
 ```
 ├── conf 配置文件
 ├── docs：api文档swagger
-    └── sql：sql执行语句  
+│   └── sql：sql执行语句  
 ├── middleware：中间件
-    └── jwt：认证中间件
+│   └── jwt：认证中间件
 ├── model：引用数据库模型
 ├── pkg：第三方包和公共模块
 │   ├── app：gin engine
@@ -67,10 +67,11 @@ $ go run main.go
 │   ├── setting：go-ini包
 │   └── util：工具库 
 └── routers：路由处理
-     └── api：controller 逻辑梳理
-         └── v1：controller逻辑处理 
+│    └── api：controller 逻辑梳理
+│        └── v1：controller逻辑处理 
 └── service：逻辑处理
 └── runtime：日志，文件缓存存放
+└── test：单元测试
 └── main.go：入口文件 
 ```
 

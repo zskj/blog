@@ -2,6 +2,7 @@ package routers
 
 import (
 	"blog/middleware"
+	"blog/pkg/setting"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -9,7 +10,6 @@ import (
 
 	_ "blog/docs"
 	"blog/middleware/jwt"
-	"blog/pkg/setting"
 	"blog/routers/api"
 	"blog/routers/api/v1"
 )
@@ -17,16 +17,13 @@ import (
 func InitRouter() *gin.Engine {
 
 	r := gin.New()
-
 	r.Use(gin.Logger())      //日志
 	r.Use(middleware.Cors()) // 跨域请求
-
 	r.Use(gin.Recovery())
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.RunMode) //设置运行模式
 
 	r.POST("/auth", api.Auth)                                            //获取登录token
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) //api注释文档
-
 	apiv1 := r.Group("/api/v1")
 	pub := apiv1.Group("/pub")
 	{
