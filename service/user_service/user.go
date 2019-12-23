@@ -9,10 +9,10 @@ type User struct {
 	ID       int
 	Username string
 	Password string
-	Role     int
-
-	CreatedBy  string
-	ModifiedBy string
+	Status   int
+	CreatedOn  int
+	ModifiedOn int
+	DeletedOn  int
 
 	PageNum  int
 	PageSize int

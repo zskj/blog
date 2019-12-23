@@ -13,6 +13,8 @@ type User struct {
 	Model
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Status   int    `json:"status"`
+	DeletedOn  int   `json:"deleted_on"`
 }
 
 func CheckUser(username, password string) (bool, error) {

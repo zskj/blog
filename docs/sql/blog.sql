@@ -71,6 +71,7 @@ CREATE TABLE `blog_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(50) DEFAULT '' COMMENT '账号',
   `password` varchar(50) DEFAULT '' COMMENT '密码',
+  `status` int(1) DEFAULT '1' COMMENT '状态: 1 正常 0 软删 -1',
   `created_on` int(11) unsigned DEFAULT NULL COMMENT '创建时间',
   `modified_on` int(11) unsigned DEFAULT NULL COMMENT '更新时间',
   `deleted_on` int(11) unsigned DEFAULT '0' COMMENT '删除时间戳',
@@ -80,4 +81,4 @@ CREATE TABLE `blog_user` (
 -- ----------------------------
 -- Records of blog_user
 -- ----------------------------
-INSERT INTO `blog_user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '0', '0', '0');
+INSERT INTO `blog_user` VALUES ('1', 'admin', 'e10adc3949ba59abbe56e057f20f883e', '1','0', '0', '0');
