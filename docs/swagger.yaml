@@ -54,6 +54,19 @@ paths:
       tags:
       - 登录管理
   /api/v1/tags:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 文章标签列表
+      tags:
+      - 标签管理
     post:
       parameters:
       - description: Name
@@ -68,6 +81,7 @@ paths:
       - description: CreatedBy
         in: query
         name: created_by
+        required: true
         type: string
       produces:
       - application/json
@@ -79,6 +93,61 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 新增文章标签
+      tags:
+      - 标签管理
+  /api/v1/tags/{id}:
+    delete:
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除文章标签
+      tags:
+      - 标签管理
+    put:
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Name
+        in: query
+        name: name
+        required: true
+        type: string
+      - description: State
+        in: query
+        name: state
+        type: integer
+      - description: ModifiedBy
+        in: query
+        name: modified_by
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 编辑文章标签
+      tags:
+      - 标签管理
   /auth:
     post:
       consumes:
