@@ -11,21 +11,21 @@ type AuthSwag struct {
 
 type User struct {
 	Model
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Status   int    `json:"status"`
-	DeletedOn  int   `json:"deleted_on"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Status    int    `json:"status"`
+	DeletedOn int    `json:"deleted_on"`
 }
 
-func CheckUser(username, password string) (bool, error) {
+func LoginCheck(username, password string) (bool, User, error) {
 	var user User
 	err := db.Select("id").Where(User{Username: username, Password: password}).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
-		return false, err
+		return false, user, err
 	}
-	if user.ID > 0 {
-		return true, nil
+	if user.ID > 0 && user.Status > 0 {
+		return true, user, nil
 	}
 
-	return false, nil
+	return false, user, nil
 }

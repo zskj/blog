@@ -1,7 +1,7 @@
 package api
 
 import (
-	"blog/service/user_service"
+	"blog/models"
 	"github.com/dchest/captcha"
 	"net/http"
 
@@ -57,8 +57,9 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	authService := user_service.User{Username: reqInfo.Username, Password: reqInfo.Password}
-	isExist, err := authService.Check()
+	//authService := user_service.User{Username: reqInfo.Username, Password: reqInfo.Password}
+	//isExist, err := authService.Check()
+	isExist, user, err := models.LoginCheck(reqInfo.Username, util.EncodeMD5(reqInfo.Password))
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -69,7 +70,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	token, err := util.GenerateToken(reqInfo.Username, reqInfo.Password)
+	token, err := util.GenerateToken(reqInfo.Username, reqInfo.Password, user)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return

@@ -1,27 +1,35 @@
 package util
 
 import (
+	"blog/models"
 	"blog/pkg/setting"
 	jwt "github.com/dgrijalva/jwt-go"
 	"time"
 )
+
 var jwtSecret = []byte(setting.JwtSecret)
+
 type Claims struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string) (string, error) {
+func GenerateToken(username string, password string, user models.User) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
 
 	claims := Claims{
 		username,
 		password,
-		jwt.StandardClaims {
-			ExpiresAt : expireTime.Unix(),
-			Issuer : "blog",
+		jwt.StandardClaims{
+			Audience:  user.Username,     // 受众
+			ExpiresAt: expireTime.Unix(), // 失效时间
+			Id:        string(user.ID),   // 编号
+			IssuedAt:  time.Now().Unix(), // 签发时间
+			Issuer:    "blog",            // 签发人
+			NotBefore: time.Now().Unix(), // 生效时间
+			Subject:   "login",           // 场景
 		},
 	}
 
