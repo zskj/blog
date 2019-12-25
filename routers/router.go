@@ -10,7 +10,6 @@ import (
 
 	_ "blog/docs"
 	"blog/middleware/jwt"
-	"blog/routers/api"
 	"blog/routers/api/v1"
 )
 
@@ -22,20 +21,22 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	gin.SetMode(setting.RunMode) //设置运行模式
 
-	r.POST("/auth", api.Auth)                                            //获取登录token
+	                                         //获取登录token
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) //api注释文档
 	apiv1 := r.Group("/api/v1")
 	pub := apiv1.Group("/pub")
 	{
 		//获取验证码Id
-		pub.GET("/login/captchaid", v1.GetCaptcha)
+		pub.GET("captchaid", v1.GetCaptcha)
 		//获取验证码图片
-		pub.GET("login/captcha", v1.ResCaptcha)
-	}
+		pub.GET("captcha", v1.ResCaptcha)
+		//登陆
 
+	}
+    apiv1.POST("auth", v1.Auth)
 	apiv1.Use(jwt.JWT()) //token 验证
 	{
-
+		apiv1.GET("currentuser", v1.CurrentUser)
 		//标签
 		tag := apiv1.Group("/tags")
 		{
@@ -48,6 +49,7 @@ func InitRouter() *gin.Engine {
 			//删除
 			tag.DELETE(":id", v1.DeleteTag)
 		}
+
 		//注册文章路由
 		RegisterArticleRouter(apiv1)
 	}

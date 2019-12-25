@@ -11,10 +11,10 @@ import (
 )
 
 // GetCaptcha 获取验证码信息
-// @Tags 登录管理
+// @Tags 公共接口
 // @Summary 获取验证码信息
 // @Success 200 {string} gin.Context.JSON
-// @Router /api/v1/pub/login/captchaid [get]
+// @Router /api/v1/pub/captchaid [get]
 func GetCaptcha(c *gin.Context) {
 	id := captcha.NewLen(4) //todo 这里要把二维码长度放到配置文件
 	appG := app.Gin{C: c}
@@ -24,13 +24,13 @@ func GetCaptcha(c *gin.Context) {
 }
 
 // GetCaptcha 获取验证码信息
-// @Tags 登录管理
+// @Tags 公共接口
 // @Summary 响应图形验证码
 // @Param captchaId query string true "验证码ID"
 // @Success 200 "图形验证码"
 // @Produce image/png
 // @Failure 400 {string} gin.Context.JSON "{code:400,data:null,msg:无效的请求参数}"
-// @Router /api/v1/pub/login/captcha [get]
+// @Router /api/v1/pub/captcha [get]
 func ResCaptcha(c *gin.Context) {
 	appG := app.Gin{C: c}
 	id := c.Query("captchaId")
