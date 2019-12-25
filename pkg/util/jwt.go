@@ -4,6 +4,7 @@ import (
 	"blog/models"
 	"blog/pkg/setting"
 	jwt "github.com/dgrijalva/jwt-go"
+	"strconv"
 	"time"
 )
 
@@ -23,13 +24,13 @@ func GenerateToken(username string, password string, user models.User) (string, 
 		username,
 		password,
 		jwt.StandardClaims{
-			Audience:  user.Username,     // 受众
-			ExpiresAt: expireTime.Unix(), // 失效时间
-			Id:        string(user.ID),   // 编号
-			IssuedAt:  time.Now().Unix(), // 签发时间
-			Issuer:    "blog",            // 签发人
-			NotBefore: time.Now().Unix(), // 生效时间
-			Subject:   "login",           // 场景
+			Audience:  user.Username,         // 受众
+			ExpiresAt: expireTime.Unix(),     // 失效时间
+			Id:        strconv.Itoa(user.ID), // 编号
+			IssuedAt:  time.Now().Unix(),     // 签发时间
+			Issuer:    "blog",                // 签发人
+			NotBefore: time.Now().Unix(),     // 生效时间
+			Subject:   "login",               // 场景
 		},
 	}
 

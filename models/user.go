@@ -19,7 +19,7 @@ type User struct {
 
 func LoginCheck(username, password string) (bool, User, error) {
 	var user User
-	err := db.Select("id").Where(User{Username: username, Password: password}).First(&user).Error
+	err := db.Where(&User{Username: username, Password: password}).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, user, err
 	}
