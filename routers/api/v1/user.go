@@ -23,10 +23,9 @@ type auth struct {
 	CaptchaId   string `json:"captcha_id"`
 }
 
-
 type currentUser struct {
-     Id string `json:"id"`
-     Username string `json:"username"`
+	Id       string `json:"id"`
+	Username string `json:"username"`
 }
 
 // @Summary   用户登录 获取token 信息
@@ -94,11 +93,11 @@ func Auth(c *gin.Context) {
 // @Success 200 {string} gin.Context.JSON
 // @Failure 400 {string} gin.Context.JSON
 // @Router  /api/v1/currentuser   [GET]
-func CurrentUser(c *gin.Context){
+func CurrentUser(c *gin.Context) {
 	var code int
 	var data interface{}
 	var user currentUser
-
+	appG := app.Gin{C: c}
 	code = e.SUCCESS
 	Authorization := c.GetHeader("Authorization") //在header中存放token
 	token := strings.Split(Authorization, " ")
@@ -120,19 +119,19 @@ func CurrentUser(c *gin.Context){
 	}
 
 	if code != e.SUCCESS {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"code": code,
-			"msg":  e.GetMsg(code),
+		appG.Response(http.StatusOK, code, map[string]interface{}{
 			"data": data,
-		})}else{
-		c.JSON(http.StatusOK, gin.H{
-			"code": code,
-			"msg":  e.GetMsg(code),
+		})
+	} else {
+		appG.Response(http.StatusOK, e.SUCCESS, map[string]interface{}{
 			"data": user,
 		})
-
 	}
 
+}
 
+//@Summary 刷新token
+//@Tag 用户管理
+func RefreshToken(c *gin.Context) {
 
 }

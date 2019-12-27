@@ -21,7 +21,7 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 	gin.SetMode(setting.RunMode) //设置运行模式
 
-	                                         //获取登录token
+	//获取登录token
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler)) //api注释文档
 	apiv1 := r.Group("/api/v1")
 	pub := apiv1.Group("/pub")
@@ -33,10 +33,14 @@ func InitRouter() *gin.Engine {
 		//登陆
 
 	}
-    apiv1.POST("auth", v1.Auth)
+	apiv1.POST("auth", v1.Auth)
 	apiv1.Use(jwt.JWT()) //token 验证
 	{
+		//获取登录用户信息
 		apiv1.GET("currentuser", v1.CurrentUser)
+
+		apiv1.GET("refreshtoken", v1.RefreshToken)
+
 		//标签
 		tag := apiv1.Group("/tags")
 		{
