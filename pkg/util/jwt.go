@@ -3,7 +3,7 @@ package util
 import (
 	"blog/models"
 	"blog/pkg/setting"
-	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/dgrijalva/jwt-go"
 	"strconv"
 	"time"
 )
@@ -11,17 +11,13 @@ import (
 var jwtSecret = []byte(setting.JwtSecret)
 
 type Claims struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
 	jwt.StandardClaims
 }
 
-func GenerateToken(username string, password string, user models.User) (string, error) {
+func GenerateToken(user models.User) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
 	claims := Claims{
-		username,
-		password,
 		jwt.StandardClaims{
 			Audience:  user.Username,         // 受众
 			ExpiresAt: expireTime.Unix(),     // 失效时间
@@ -33,8 +29,7 @@ func GenerateToken(username string, password string, user models.User) (string, 
 		},
 	}
 	tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	token, err := tokenClaims.SignedString(jwtSecret)
-	return token, err
+	return tokenClaims.SignedString(jwtSecret)
 }
 
 func ParseToken(token string) (*Claims, error) {
@@ -47,4 +42,38 @@ func ParseToken(token string) (*Claims, error) {
 		}
 	}
 	return nil, err
+}
+
+func RefreshToken(tokenString string) (string, error) {
+	tokenClaims, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
+	if tokenClaims != nil {
+		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+			id, err := strconv.Atoi(claims.Id)
+			if err != nil {
+				return "", err
+			}
+			user, userError := models.FindUserById(id)
+			if userError != nil {
+				return "", err
+			}
+			nowTime := time.Now()
+			expireTime := nowTime.Add(1 * time.Hour)
+			claims := Claims{
+				jwt.StandardClaims{
+					Audience:  user.Username,         // 受众
+					ExpiresAt: expireTime.Unix(),     // 失效时间
+					Id:        strconv.Itoa(user.ID), // 编号
+					IssuedAt:  time.Now().Unix(),     // 签发时间
+					Issuer:    "blog",                // 签发人
+					NotBefore: time.Now().Unix(),     // 生效时间
+					Subject:   "refresh",             // 场景
+				},
+			}
+			tokenClaims := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+			return tokenClaims.SignedString(jwtSecret)
+		}
+	}
+	return "", err
 }

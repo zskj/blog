@@ -75,7 +75,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	token, err := util.GenerateToken(reqInfo.Username, reqInfo.Password, user)
+	token, err := util.GenerateToken(user)
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, nil)
 		return
@@ -85,7 +85,7 @@ func Auth(c *gin.Context) {
 	})
 }
 
-// @Summary    获取登陆用户信息
+// @Summary 获取登录用户信息
 // @Tags 用户管理
 // @Accept json
 // @Produce  json
@@ -115,7 +115,7 @@ func CurrentUser(c *gin.Context) {
 			}
 		}
 		user.Id = claims.Id
-		user.Username = claims.Username
+		user.Username = claims.Audience
 	}
 
 	if code != e.SUCCESS {
@@ -130,8 +130,35 @@ func CurrentUser(c *gin.Context) {
 
 }
 
-//@Summary 刷新token
-//@Tag 用户管理
+// @Summary 刷新token
+// @Tags 用户管理
+// @Accept json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Success 200 {string} gin.Context.JSON
+// @Failure 400 {string} gin.Context.JSON
+// @Router  /api/v1/refreshtoken  [GET]
 func RefreshToken(c *gin.Context) {
+	var data interface{}
+	var code int
+	appG := app.Gin{C: c}
+	code = e.SUCCESS
+	Authorization := c.GetHeader("Authorization") //在header中存放token
+	if Authorization == "" {
+		code = e.INVALID_PARAMS
+		appG.Response(http.StatusOK, code, map[string]interface{}{
+			"data": data,
+		})
+	}
+	token, err := util.RefreshToken(Authorization)
+	if err != nil {
+		code = e.INVALID_PARAMS
+		appG.Response(http.StatusOK, code, map[string]interface{}{
+			"data": err,
+		})
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, map[string]string{
+		"token": token,
+	})
 
 }

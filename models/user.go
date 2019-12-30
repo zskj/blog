@@ -29,3 +29,12 @@ func LoginCheck(username, password string) (bool, User, error) {
 
 	return false, user, nil
 }
+
+func FindUserById(id int) (User, error) {
+	var user User
+	err := db.First(&user, id).Error
+	if err != nil && err != gorm.ErrRecordNotFound {
+		return user, err
+	}
+	return  user , err
+}
