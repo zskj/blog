@@ -4,8 +4,10 @@ import (
 	"blog/models"
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/jinzhu/gorm"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
@@ -24,8 +26,62 @@ type auth struct {
 }
 
 type currentUser struct {
-	Id       string `json:"id"`
+	Id string `json:"id"`
+
 	Username string `json:"username"`
+}
+
+// @Summary   注册用户
+// @Tags 用户管理
+// @Accept json
+// @Produce  json
+// @Param   body  body   models.Reg   true "body"
+// @Success 200 {string} gin.Context.JSON
+// @Failure 401 {string} gin.Context.JSON
+// @Router /api/v1/reg  [POST]
+func Reg(c *gin.Context) {
+
+	appG := app.Gin{C: c}
+	var reqInfo models.Reg
+	var data interface{}
+	err := c.BindJSON(&reqInfo)
+	if err != nil {
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+	}
+	valid := validation.Validation{}
+	valid.Required(reqInfo.Username, "username").Message("请输入用户名")
+	valid.Required(reqInfo.Password, "password").Message("输入密码")
+	valid.Required(reqInfo.PasswordAgain, "password_again").Message("输入去确认密码")
+	valid.MaxSize(reqInfo.Username, 50, "username").Message("密码最长为50字符")
+	valid.MaxSize(reqInfo.Password, 50, "password").Message("密码最长为50字符")
+	valid.MaxSize(reqInfo.PasswordAgain, 50, "password_again").Message("确认密码最长为50字符")
+	valid.Required(reqInfo.CaptchaCode, "captcha_code").Message("请您输入验证码")
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, valid.Errors)
+		return
+	}
+	if !captcha.VerifyString(reqInfo.CaptchaId, reqInfo.CaptchaCode) {
+		appG.Response(http.StatusInternalServerError, e.ERROR_CAPTCHA_FAIL, data)
+		return
+	}
+	if _, isExist := models.FindUserByUsername(reqInfo.Username); isExist != gorm.ErrRecordNotFound {
+		appG.Response(http.StatusInternalServerError, e.ERROR_REPEAT_NAME, data)
+		return
+	}
+	var newUser models.User
+	newUser.Username = reqInfo.Username
+	newUser.Password = util.EncodeMD5(reqInfo.Password)
+	newUser.Status = 1
+	newUser.CreatedOn = int(time.Now().Unix())
+	newUser.ModifiedOn = int(time.Now().Unix())
+	userId, isSuccess := models.NewUser(&newUser)
+	if userId > 0 {
+		appG.Response(http.StatusOK, e.SUCCESS, map[string]interface{}{"id": userId})
+		return
+	}
+	appG.Response(http.StatusOK, e.ERROR_ADD_FAIL, isSuccess)
+
 }
 
 // @Summary   用户登录 获取token 信息
@@ -46,8 +102,11 @@ func Auth(c *gin.Context) {
 	}
 
 	valid := validation.Validation{}
-	valid.MaxSize(reqInfo.Username, 100, "username").Message("最长为100字符")
-	valid.MaxSize(reqInfo.Password, 100, "password").Message("最长为100字符")
+	valid.Required(reqInfo.Username, "username").Message("请输入用户名")
+	valid.Required(reqInfo.Password, "password").Message("输入密码")
+	valid.MaxSize(reqInfo.Username, 50, "username").Message("最长为50字符")
+	valid.MaxSize(reqInfo.Password, 50, "password").Message("用户名最长为50字符")
+	valid.Required(c.GetString("captcha_code"), "captcha").Message("请您输入验证码")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)

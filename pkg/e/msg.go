@@ -12,6 +12,7 @@ var MsgFlags = map[int]string{
 	ERROR_NOT_EXIST_CAPTCHAID: "captchaId参数不存在",
 	ERROR_CAPTCHAID:           "captchaId参数错误",
 	ERROR_CAPTCHA_FAIL:        "验证码错误",
+	ERROR_REPEAT_NAME:        "用户名已注册",
 
 	ERROR_EXIST:       "已存在该对象名称",
 	ERROR_EXIST_FAIL:  "获取已存在对象失败",

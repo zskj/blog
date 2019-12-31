@@ -14,6 +14,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
+//生成令牌
 func GenerateToken(user models.User) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(3 * time.Hour)
@@ -32,6 +33,7 @@ func GenerateToken(user models.User) (string, error) {
 	return tokenClaims.SignedString(jwtSecret)
 }
 
+//解析令牌
 func ParseToken(token string) (*Claims, error) {
 	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
@@ -44,6 +46,7 @@ func ParseToken(token string) (*Claims, error) {
 	return nil, err
 }
 
+//刷新令牌
 func RefreshToken(tokenString string) (string, error) {
 	tokenClaims, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil

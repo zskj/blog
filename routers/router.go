@@ -34,11 +34,12 @@ func InitRouter() *gin.Engine {
 
 	}
 	apiv1.POST("auth", v1.Auth)
+	apiv1.POST("reg", v1.Reg)
 	apiv1.Use(jwt.JWT()) //token 验证
 	{
 		//获取登录用户信息
 		apiv1.GET("currentuser", v1.CurrentUser)
-
+		//刷新token
 		apiv1.GET("refreshtoken", v1.RefreshToken)
 
 		//标签
