@@ -30,12 +30,12 @@ func InitRouter() *gin.Engine {
 		pub.GET("captchaid", v1.GetCaptcha)
 		//获取验证码图片
 		pub.GET("captcha", v1.ResCaptcha)
-		//登陆
-
 	}
+	//登陆
 	apiv1.POST("auth", v1.Auth)
+	//注册
 	apiv1.POST("reg", v1.Reg)
-	apiv1.Use(jwt.JWT()) //token 验证
+	apiv1.Use(jwt.JWT()) //令牌 验证中间件
 	{
 		//获取登录用户信息
 		apiv1.GET("currentuser", v1.CurrentUser)

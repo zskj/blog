@@ -2,21 +2,24 @@ package models
 
 import "github.com/jinzhu/gorm"
 
+//登录
 type AuthSwag struct {
-	Username    string `json:"username"`
-	Password    string `json:"password"`
+	Username    string `json:"username"` //登录账户
+	Password    string `json:"password"` //登录密码
 	CaptchaCode string `json:"captcha_code"`
 	CaptchaId   string `json:"captcha_id"`
 }
 
+//注册
 type Reg struct {
-	Username      string `json:"username"`
-	Password      string `json:"password"`
-	PasswordAgain string `json:"password_again"`
-	CaptchaCode   string `json:"captcha_code"`
-	CaptchaId     string `json:"captcha_id"`
+	Username      string `json:"username" binding:"required"`        //用户名
+	Password      string `json:"password"  binding:"required"`       //密码
+	PasswordAgain string `json:"password_again" binding:"required" ` //确认密码
+	CaptchaCode   string `json:"captcha_code" binding:"required"`    //验证码
+	CaptchaId     string `json:"captcha_id"  binding:"required"`     //验证码Id
 }
 
+// user 表
 type User struct {
 	Model
 	Username  string `json:"username"`

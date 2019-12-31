@@ -7,22 +7,35 @@ definitions:
       captcha_id:
         type: string
       password:
+        description: 登录密码
         type: string
       username:
+        description: 登录账户
         type: string
     type: object
   models.Reg:
     properties:
       captcha_code:
+        description: 验证码
         type: string
       captcha_id:
+        description: 验证码Id
         type: string
       password:
+        description: 密码
         type: string
       password_again:
+        description: 确认密码
         type: string
       username:
+        description: 用户名
         type: string
+    required:
+    - captcha_code
+    - captcha_id
+    - password
+    - password_again
+    - username
     type: object
 host: localhost:8000
 info:
@@ -149,8 +162,8 @@ paths:
           description: OK
           schema:
             type: string
-        "400":
-          description: Bad Request
+        "401":
+          description: Unauthorized
           schema:
             type: string
       summary: 注册用户
