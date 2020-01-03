@@ -24,6 +24,7 @@ type User struct {
 	Model
 	Username  string `json:"username"`
 	Password  string `json:"password"`
+	Secret    string `json:"secret"`
 	Status    int    `json:"status"`
 	DeletedOn int    `json:"deleted_on"`
 }
@@ -41,7 +42,7 @@ func LoginCheck(username, password string) (bool, User, error) {
 
 	return false, user, nil
 }
-
+//通过ID 查找用户
 func FindUserById(id int) (User, error) {
 	var user User
 	err := db.First(&user, id).Error
@@ -50,7 +51,7 @@ func FindUserById(id int) (User, error) {
 	}
 	return user, err
 }
-
+//通过username 查找用户
 func FindUserByUsername(username string) (User, error) {
 	var user User
 	err := db.Where("username = ?", username).First(&user).Error
@@ -60,7 +61,7 @@ func FindUserByUsername(username string) (User, error) {
 	}
 	return user, err
 }
-
+//创建新用户
 func NewUser(user *User) (int, error) {
 	err := db.Create(user).Error
 	if err != nil {

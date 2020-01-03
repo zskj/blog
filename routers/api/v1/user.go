@@ -73,6 +73,7 @@ func Reg(c *gin.Context) {
 	newUser.Username = reqInfo.Username
 	newUser.Password = util.EncodeMD5(reqInfo.Password)
 	newUser.Status = 1
+	newUser.Secret = util.RandStringBytesMaskImprSrcUnsafe(5)
 	newUser.CreatedOn = int(time.Now().Unix())
 	newUser.ModifiedOn = int(time.Now().Unix())
 	userId, isSuccess := models.NewUser(&newUser)
@@ -106,7 +107,7 @@ func Auth(c *gin.Context) {
 	valid.Required(reqInfo.Password, "password").Message("输入密码")
 	valid.MaxSize(reqInfo.Username, 50, "username").Message("最长为50字符")
 	valid.MaxSize(reqInfo.Password, 50, "password").Message("用户名最长为50字符")
-	valid.Required(c.GetString("captcha_code"), "captcha").Message("请您输入验证码")
+	valid.Required(reqInfo.CaptchaCode, "captcha_code").Message("请您输入验证码")
 
 	if valid.HasErrors() {
 		app.MarkErrors(valid.Errors)
