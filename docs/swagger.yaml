@@ -60,6 +60,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.AuthSwag'
+          type: object
       produces:
       - application/json
       responses:
@@ -92,6 +93,26 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 获取登录用户信息
+      tags:
+      - 用户管理
+  /api/v1/logout:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用户登出
       tags:
       - 用户管理
   /api/v1/pub/captcha:
@@ -155,6 +176,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.Reg'
+          type: object
       produces:
       - application/json
       responses:
