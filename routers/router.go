@@ -41,7 +41,8 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("currentuser", v1.CurrentUser)
 		//刷新token
 		apiv1.GET("refreshtoken", v1.RefreshToken)
-
+		//用户登出
+		apiv1.POST("logout", v1.Logout)
 		//标签
 		tag := apiv1.Group("/tags")
 		{

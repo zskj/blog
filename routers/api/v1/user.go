@@ -222,3 +222,43 @@ func RefreshToken(c *gin.Context) {
 	})
 
 }
+
+// @Summary 用户登出
+// @Tags 用户管理
+// @Accept json
+// @Produce  json
+// @Security ApiKeyAuth
+// @Success 200 {string} gin.Context.JSON
+// @Failure 400 {string} gin.Context.JSON
+// @Router  /api/v1/logout  [POST]
+func Logout(c *gin.Context) {
+	var data interface{}
+	var code int
+	appG := app.Gin{C: c}
+	code = e.SUCCESS
+	Authorization := c.GetHeader("Authorization") //在header中存放token
+	if Authorization == "" {
+		code = e.INVALID_PARAMS
+		appG.Response(http.StatusOK, code, map[string]interface{}{
+			"data": data,
+		})
+	}
+	user, err := util.TokenUser(Authorization)
+	if err != nil {
+		code = e.ERROR_EXIST_FAIL
+		appG.Response(http.StatusOK, code, map[string]interface{}{
+			"data": err,
+		})
+	}
+	_, isSuccess := models.UpdateUserSecret(&user)
+	if isSuccess != nil {
+		code = e.ERROR_EDIT_FAIL
+		appG.Response(http.StatusOK, code, map[string]interface{}{
+			"data": isSuccess,
+		})
+	}
+	appG.Response(http.StatusOK, code, map[string]interface{}{
+		"data": data,
+	})
+
+}

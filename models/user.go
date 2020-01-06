@@ -1,6 +1,9 @@
 package models
 
-import "github.com/jinzhu/gorm"
+import (
+	"blog/pkg/util"
+	"github.com/jinzhu/gorm"
+)
 
 //登录
 type AuthSwag struct {
@@ -42,6 +45,7 @@ func LoginCheck(username, password string) (bool, User, error) {
 
 	return false, user, nil
 }
+
 //通过ID 查找用户
 func FindUserById(id int) (User, error) {
 	var user User
@@ -51,6 +55,7 @@ func FindUserById(id int) (User, error) {
 	}
 	return user, err
 }
+
 //通过username 查找用户
 func FindUserByUsername(username string) (User, error) {
 	var user User
@@ -61,9 +66,28 @@ func FindUserByUsername(username string) (User, error) {
 	}
 	return user, err
 }
+
 //创建新用户
 func NewUser(user *User) (int, error) {
 	err := db.Create(user).Error
+	if err != nil {
+		return 0, err
+	}
+	return user.ID, err
+}
+
+//更新用户的secret
+func UpdateUserSecret(user *User) (int, error) {
+	var secretString string
+	for {
+		secretString = util.RandStringBytesMaskImprSrcUnsafe(5)
+		if user.Secret != secretString {
+			break
+		}
+	}
+	db.First(user)
+	user.Secret = secretString
+	err := db.Save(user).Error
 	if err != nil {
 		return 0, err
 	}
