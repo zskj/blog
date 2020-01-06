@@ -2,6 +2,7 @@ package v1
 
 import (
 	"blog/models"
+	"blog/pkg/util/rand"
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
@@ -73,7 +74,7 @@ func Reg(c *gin.Context) {
 	newUser.Username = reqInfo.Username
 	newUser.Password = util.EncodeMD5(reqInfo.Password)
 	newUser.Status = 1
-	newUser.Secret = util.RandStringBytesMaskImprSrcUnsafe(5)
+	newUser.Secret = rand.RandStringBytesMaskImprSrcUnsafe(5)
 	newUser.CreatedOn = int(time.Now().Unix())
 	newUser.ModifiedOn = int(time.Now().Unix())
 	userId, isSuccess := models.NewUser(&newUser)

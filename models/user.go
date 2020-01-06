@@ -1,7 +1,7 @@
 package models
 
 import (
-	"blog/pkg/util"
+	"blog/pkg/util/rand"
 	"github.com/jinzhu/gorm"
 )
 
@@ -80,7 +80,7 @@ func NewUser(user *User) (int, error) {
 func UpdateUserSecret(user *User) (int, error) {
 	var secretString string
 	for {
-		secretString = util.RandStringBytesMaskImprSrcUnsafe(5)
+		secretString = rand.RandStringBytesMaskImprSrcUnsafe(5)
 		if user.Secret != secretString {
 			break
 		}
