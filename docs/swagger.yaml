@@ -13,6 +13,15 @@ definitions:
         description: 登录账户
         type: string
     type: object
+  models.PasswordSwag:
+    properties:
+      new_password:
+        description: 新密码
+        type: string
+      old_password:
+        description: 旧密码
+        type: string
+    type: object
   models.Reg:
     properties:
       captcha_code:
@@ -60,7 +69,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.AuthSwag'
-          type: object
       produces:
       - application/json
       responses:
@@ -113,6 +121,33 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 用户登出
+      tags:
+      - 用户管理
+  /api/v1/password:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: body
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.PasswordSwag'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 登录用户修改密码
       tags:
       - 用户管理
   /api/v1/pub/captcha:
@@ -176,7 +211,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.Reg'
-          type: object
       produces:
       - application/json
       responses:

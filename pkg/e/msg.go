@@ -29,6 +29,7 @@ var MsgFlags = map[int]string{
 	ERROR_AUTH_CHECK_TOKEN_TIMEOUT: "Token已超时",
 	ERROR_AUTH_TOKEN:               "Token生成失败",
 	ERROR_AUTH:                     "Token错误",
+	INVALID_OLD_PASS:               "旧密码错误",
 }
 
 func GetMsg(code int) string {

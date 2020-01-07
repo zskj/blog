@@ -2,6 +2,7 @@ package v1
 
 import (
 	"blog/models"
+	"blog/pkg/util/hash"
 	"blog/pkg/util/rand"
 	"github.com/dchest/captcha"
 	"github.com/dgrijalva/jwt-go"
@@ -72,7 +73,7 @@ func Reg(c *gin.Context) {
 	}
 	var newUser models.User
 	newUser.Username = reqInfo.Username
-	newUser.Password = util.EncodeMD5(reqInfo.Password)
+	newUser.Password = hash.EncodeMD5(reqInfo.Password)
 	newUser.Status = 1
 	newUser.Secret = rand.RandStringBytesMaskImprSrcUnsafe(5)
 	newUser.CreatedOn = int(time.Now().Unix())
@@ -120,12 +121,7 @@ func Auth(c *gin.Context) {
 		return
 	}
 
-	if err != nil {
-		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
-		return
-	}
-
-	isExist, user, err := models.LoginCheck(reqInfo.Username, util.EncodeMD5(reqInfo.Password))
+	isExist, user, err := models.LoginCheck(reqInfo.Username, hash.EncodeMD5(reqInfo.Password))
 	if err != nil {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
 		return
@@ -262,4 +258,50 @@ func Logout(c *gin.Context) {
 		"data": data,
 	})
 
+}
+
+// @Summary 登录用户修改密码
+// @Tags 用户管理
+// @Accept json
+// @Produce  json
+// @Param   body  body   models.PasswordSwag   true "body"
+// @Security ApiKeyAuth
+// @Success 200 {string} gin.Context.JSON
+// @Failure 400 {string} gin.Context.JSON
+// @Router  /api/v1/password   [POST]
+func Password(c *gin.Context) {
+	appG := app.Gin{C: c}
+	Authorization := c.GetHeader("Authorization") //在header中存放token
+	var reqInfo models.PasswordSwag
+	err := c.BindJSON(&reqInfo)
+	if err != nil {
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
+	valid := validation.Validation{}
+	valid.Required(reqInfo.NewPassword, "new_password").Message("请输入新密码")
+	valid.Required(reqInfo.OldPassword, "old_password").Message("输入旧密码")
+	valid.MaxSize(reqInfo.NewPassword, 50, "new_password").Message("新密码最长为50字符")
+	valid.MaxSize(reqInfo.OldPassword, 50, "old_password").Message("密码最长为50字符")
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, valid.Errors)
+		return
+	}
+	user, err := util.TokenUser(Authorization)
+	if err != nil {
+		appG.Response(http.StatusBadRequest, e.ERROR_NOT_EXIST, err)
+		return
+	}
+	if hash.EncodeMD5(reqInfo.OldPassword) != user.Password {
+		appG.Response(http.StatusBadRequest, e.INVALID_OLD_PASS, nil)
+		return
+	}
+	_, isOk := models.UpdateUserNewPassword(&user, reqInfo.NewPassword)
+	if isOk != nil {
+		appG.Response(http.StatusBadRequest, e.ERROR_EDIT_FAIL, isOk)
+		return
+	}
+	appG.Response(http.StatusOK, e.SUCCESS, isOk)
+	return
 }

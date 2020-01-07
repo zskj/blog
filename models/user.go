@@ -1,6 +1,7 @@
 package models
 
 import (
+	"blog/pkg/util/hash"
 	"blog/pkg/util/rand"
 	"github.com/jinzhu/gorm"
 )
@@ -11,6 +12,12 @@ type AuthSwag struct {
 	Password    string `json:"password"` //登录密码
 	CaptchaCode string `json:"captcha_code"`
 	CaptchaId   string `json:"captcha_id"`
+}
+
+//修改密码
+type PasswordSwag struct {
+	OldPassword    string `json:"old_password"` //旧密码
+	NewPassword    string `json:"new_password"` //新密码
 }
 
 //注册
@@ -88,6 +95,25 @@ func UpdateUserSecret(user *User) (int, error) {
 	db.First(user)
 	user.Secret = secretString
 	err := db.Save(user).Error
+	if err != nil {
+		return 0, err
+	}
+	return user.ID, err
+}
+
+//更新用户的secret
+func UpdateUserNewPassword(user *User , newPassword string) (int, error) {
+	var secretString string
+	for {
+		secretString = rand.RandStringBytesMaskImprSrcUnsafe(5)
+		if user.Secret != secretString {
+			break
+		}
+	}
+	db.First(user)
+	user.Secret = secretString
+	user.Password = hash.EncodeMD5(newPassword)
+		err := db.Save(user).Error
 	if err != nil {
 		return 0, err
 	}

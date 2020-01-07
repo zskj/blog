@@ -43,6 +43,8 @@ func InitRouter() *gin.Engine {
 		apiv1.GET("refreshtoken", v1.RefreshToken)
 		//用户登出
 		apiv1.POST("logout", v1.Logout)
+		//登录用户修改密码
+		apiv1.POST("password", v1.Password)
 		//标签
 		tag := apiv1.Group("/tags")
 		{
@@ -55,7 +57,6 @@ func InitRouter() *gin.Engine {
 			//删除
 			tag.DELETE(":id", v1.DeleteTag)
 		}
-
 		//注册文章路由
 		RegisterArticleRouter(apiv1)
 	}
