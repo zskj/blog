@@ -8,6 +8,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -271,7 +272,6 @@ func Logout(c *gin.Context) {
 // @Router  /api/v1/password   [POST]
 func Password(c *gin.Context) {
 	appG := app.Gin{C: c}
-	Authorization := c.GetHeader("Authorization") //在header中存放token
 	var reqInfo models.PasswordSwag
 	err := c.BindJSON(&reqInfo)
 	if err != nil {
@@ -288,7 +288,17 @@ func Password(c *gin.Context) {
 		appG.Response(http.StatusInternalServerError, e.ERROR_ADD_FAIL, valid.Errors)
 		return
 	}
-	user, err := util.TokenUser(Authorization)
+	claims := c.MustGet("claims").(*util.Claims)
+	if claims == nil {
+		appG.Response(http.StatusOK, e.ERROR_AUTH, nil)
+		return
+	}
+	id, err := strconv.Atoi(claims.Id)
+	if err != nil {
+		appG.Response(http.StatusBadRequest, e.ERROR_NOT_EXIST, err)
+		return
+	}
+	user, err := models.FindUserById(id)
 	if err != nil {
 		appG.Response(http.StatusBadRequest, e.ERROR_NOT_EXIST, err)
 		return

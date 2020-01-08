@@ -21,7 +21,7 @@ func JWT() gin.HandlerFunc {
 		if Authorization == "" {
 			code = e.INVALID_PARAMS
 		} else {
-			_, err := util.ParseToken(Authorization)
+			claims, err := util.ParseToken(Authorization)
 			if err != nil {
 				switch err.(*jwt.ValidationError).Errors {
 				case jwt.ValidationErrorExpired:
@@ -30,6 +30,7 @@ func JWT() gin.HandlerFunc {
 					code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
 				}
 			}
+			c.Set("claims", claims)
 		}
 		if code != e.SUCCESS {
 			appG.Response(http.StatusUnauthorized, code, map[string]interface{}{

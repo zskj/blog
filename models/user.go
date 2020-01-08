@@ -16,8 +16,8 @@ type AuthSwag struct {
 
 //修改密码
 type PasswordSwag struct {
-	OldPassword    string `json:"old_password"` //旧密码
-	NewPassword    string `json:"new_password"` //新密码
+	OldPassword string `json:"old_password"` //旧密码
+	NewPassword string `json:"new_password"` //新密码
 }
 
 //注册
@@ -102,7 +102,7 @@ func UpdateUserSecret(user *User) (int, error) {
 }
 
 //更新用户的secret
-func UpdateUserNewPassword(user *User , newPassword string) (int, error) {
+func UpdateUserNewPassword(user *User, newPassword string) (int, error) {
 	var secretString string
 	for {
 		secretString = rand.RandStringBytesMaskImprSrcUnsafe(5)
@@ -113,7 +113,7 @@ func UpdateUserNewPassword(user *User , newPassword string) (int, error) {
 	db.First(user)
 	user.Secret = secretString
 	user.Password = hash.EncodeMD5(newPassword)
-		err := db.Save(user).Error
+	err := db.Save(user).Error
 	if err != nil {
 		return 0, err
 	}
