@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"blog/routers/api/v1"
+	"blog/controller/api/v1"
 	"github.com/gin-gonic/gin"
 )
 

@@ -10,7 +10,7 @@ import (
 
 	_ "blog/docs"
 	"blog/middleware/jwt"
-	"blog/routers/api/v1"
+	"blog/controller/api/v1"
 )
 
 func InitRouter() *gin.Engine {

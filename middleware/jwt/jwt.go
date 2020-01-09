@@ -16,8 +16,6 @@ func JWT() gin.HandlerFunc {
 		appG := app.Gin{C: c}
 		code = e.SUCCESS
 		Authorization := c.GetHeader("Authorization") //在header中存放token
-		//token := strings.Split(Authorization, " ")
-		//token := c.Query("token")
 		if Authorization == "" {
 			code = e.INVALID_PARAMS
 		} else {

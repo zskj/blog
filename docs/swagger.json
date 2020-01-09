@@ -34,7 +34,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.AuthSwag"
+                            "$ref": "#/definitions/schema.AuthSwag"
                         }
                     }
                 ],
@@ -144,7 +144,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.PasswordSwag"
+                            "$ref": "#/definitions/schema.PasswordSwag"
                         }
                     }
                 ],
@@ -437,38 +437,6 @@
         }
     },
     "definitions": {
-        "models.AuthSwag": {
-            "type": "object",
-            "properties": {
-                "captcha_code": {
-                    "type": "string"
-                },
-                "captcha_id": {
-                    "type": "string"
-                },
-                "password": {
-                    "description": "登录密码",
-                    "type": "string"
-                },
-                "username": {
-                    "description": "登录账户",
-                    "type": "string"
-                }
-            }
-        },
-        "models.PasswordSwag": {
-            "type": "object",
-            "properties": {
-                "new_password": {
-                    "description": "新密码",
-                    "type": "string"
-                },
-                "old_password": {
-                    "description": "旧密码",
-                    "type": "string"
-                }
-            }
-        },
         "models.Reg": {
             "type": "object",
             "required": [
@@ -497,6 +465,38 @@
                 },
                 "username": {
                     "description": "用户名",
+                    "type": "string"
+                }
+            }
+        },
+        "schema.AuthSwag": {
+            "type": "object",
+            "properties": {
+                "captcha_code": {
+                    "type": "string"
+                },
+                "captcha_id": {
+                    "type": "string"
+                },
+                "password": {
+                    "description": "登录密码",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "登录账户",
+                    "type": "string"
+                }
+            }
+        },
+        "schema.PasswordSwag": {
+            "type": "object",
+            "properties": {
+                "new_password": {
+                    "description": "新密码",
+                    "type": "string"
+                },
+                "old_password": {
+                    "description": "旧密码",
                     "type": "string"
                 }
             }

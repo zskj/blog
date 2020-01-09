@@ -1,27 +1,5 @@
 basePath: /
 definitions:
-  models.AuthSwag:
-    properties:
-      captcha_code:
-        type: string
-      captcha_id:
-        type: string
-      password:
-        description: 登录密码
-        type: string
-      username:
-        description: 登录账户
-        type: string
-    type: object
-  models.PasswordSwag:
-    properties:
-      new_password:
-        description: 新密码
-        type: string
-      old_password:
-        description: 旧密码
-        type: string
-    type: object
   models.Reg:
     properties:
       captcha_code:
@@ -46,6 +24,28 @@ definitions:
     - password_again
     - username
     type: object
+  schema.AuthSwag:
+    properties:
+      captcha_code:
+        type: string
+      captcha_id:
+        type: string
+      password:
+        description: 登录密码
+        type: string
+      username:
+        description: 登录账户
+        type: string
+    type: object
+  schema.PasswordSwag:
+    properties:
+      new_password:
+        description: 新密码
+        type: string
+      old_password:
+        description: 旧密码
+        type: string
+    type: object
 host: localhost:8000
 info:
   contact:
@@ -68,7 +68,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.AuthSwag'
+          $ref: '#/definitions/schema.AuthSwag'
       produces:
       - application/json
       responses:
@@ -133,7 +133,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.PasswordSwag'
+          $ref: '#/definitions/schema.PasswordSwag'
       produces:
       - application/json
       responses:

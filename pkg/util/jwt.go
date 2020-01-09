@@ -38,7 +38,7 @@ func GenerateToken(user models.User) (string, error) {
 //解析令牌
 func ParseToken(token string) (*Claims, error) {
 
-	u , e := TokenUser(token)
+	u , e := tokenUser(token)
 	if e != nil {
 		return nil , e
 	}
@@ -55,7 +55,7 @@ func ParseToken(token string) (*Claims, error) {
 
 //刷新令牌
 func RefreshToken(tokenString string) (string, error) {
-	u , e := TokenUser(tokenString)
+	u , e := tokenUser(tokenString)
 
 	if e != nil {
 		return "" , e
@@ -95,7 +95,7 @@ func RefreshToken(tokenString string) (string, error) {
 }
 
 //根据token 获取user
-func TokenUser(token string)( models.User , error ){
+func tokenUser(token string)( models.User , error ){
 	user := models.User{}
 	payload := strings.Split(token, ".")
 	bytes, e := jwt.DecodeSegment(payload[1])

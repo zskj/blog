@@ -2,6 +2,7 @@ package v1
 
 import (
 	"blog/models"
+	"blog/models/schema"
 	"blog/pkg/util/hash"
 	"blog/pkg/util/rand"
 	"github.com/dchest/captcha"
@@ -38,14 +39,14 @@ type currentUser struct {
 // @Tags 用户管理
 // @Accept json
 // @Produce  json
-// @Param   body  body   models.Reg   true "body"
+// @Param   body  body   schema.Reg   true "body"
 // @Success 200 {string} gin.Context.JSON
 // @Failure 401 {string} gin.Context.JSON
 // @Router /api/v1/reg  [POST]
 func Reg(c *gin.Context) {
 
 	appG := app.Gin{C: c}
-	var reqInfo models.Reg
+	var reqInfo schema.Reg
 	var data interface{}
 	err := c.BindJSON(&reqInfo)
 	if err != nil {
@@ -92,7 +93,7 @@ func Reg(c *gin.Context) {
 // @Tags 用户管理
 // @Accept json
 // @Produce  json
-// @Param   body  body   models.AuthSwag   true "body"
+// @Param   body  body   schema.AuthSwag   true "body"
 // @Success 200 {string} gin.Context.JSON
 // @Failure 400 {string} gin.Context.JSON
 // @Router /api/v1/auth  [POST]
@@ -234,14 +235,17 @@ func Logout(c *gin.Context) {
 	var code int
 	appG := app.Gin{C: c}
 	code = e.SUCCESS
-	Authorization := c.GetHeader("Authorization") //在header中存放token
-	if Authorization == "" {
-		code = e.INVALID_PARAMS
-		appG.Response(http.StatusOK, code, map[string]interface{}{
-			"data": data,
-		})
+	claims := c.MustGet("claims").(*util.Claims)
+	if claims == nil {
+		appG.Response(http.StatusOK, e.ERROR_AUTH, nil)
+		return
 	}
-	user, err := util.TokenUser(Authorization)
+	id, err := strconv.Atoi(claims.Id)
+	if err != nil {
+		appG.Response(http.StatusBadRequest, e.ERROR_NOT_EXIST, err)
+		return
+	}
+	user, err := models.FindUserById(id)
 	if err != nil {
 		code = e.ERROR_EXIST_FAIL
 		appG.Response(http.StatusOK, code, map[string]interface{}{
@@ -265,14 +269,14 @@ func Logout(c *gin.Context) {
 // @Tags 用户管理
 // @Accept json
 // @Produce  json
-// @Param   body  body   models.PasswordSwag   true "body"
+// @Param   body  body   schema.PasswordSwag   true "body"
 // @Security ApiKeyAuth
 // @Success 200 {string} gin.Context.JSON
 // @Failure 400 {string} gin.Context.JSON
 // @Router  /api/v1/password   [POST]
 func Password(c *gin.Context) {
 	appG := app.Gin{C: c}
-	var reqInfo models.PasswordSwag
+	var reqInfo schema.PasswordSwag
 	err := c.BindJSON(&reqInfo)
 	if err != nil {
 		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
