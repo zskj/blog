@@ -263,7 +263,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Reg"
+                            "$ref": "#/definitions/schema.Reg"
                         }
                     }
                 ],
@@ -437,35 +437,42 @@
         }
     },
     "definitions": {
-        "models.Reg": {
+        "gin.Context": {
             "type": "object",
-            "required": [
-                "captcha_code",
-                "captcha_id",
-                "password",
-                "password_again",
-                "username"
-            ],
             "properties": {
-                "captcha_code": {
-                    "description": "验证码",
+                "accepted": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "engine": {
+                    "type": "Engine"
+                },
+                "errors": {
+                    "type": "errorMsgs"
+                },
+                "handlers": {
+                    "type": "HandlersChain"
+                },
+                "index": {
+                    "type": "integer"
+                },
+                "keys": {
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "params": {
+                    "type": "Params"
+                },
+                "request": {
                     "type": "string"
                 },
-                "captcha_id": {
-                    "description": "验证码Id",
-                    "type": "string"
+                "writer": {
+                    "type": "ResponseWriter"
                 },
-                "password": {
-                    "description": "密码",
-                    "type": "string"
-                },
-                "password_again": {
-                    "description": "确认密码",
-                    "type": "string"
-                },
-                "username": {
-                    "description": "用户名",
-                    "type": "string"
+                "writermem": {
+                    "type": "responseWriter"
                 }
             }
         },
@@ -497,6 +504,38 @@
                 },
                 "old_password": {
                     "description": "旧密码",
+                    "type": "string"
+                }
+            }
+        },
+        "schema.Reg": {
+            "type": "object",
+            "required": [
+                "captcha_code",
+                "captcha_id",
+                "password",
+                "password_again",
+                "username"
+            ],
+            "properties": {
+                "captcha_code": {
+                    "description": "验证码",
+                    "type": "string"
+                },
+                "captcha_id": {
+                    "description": "验证码Id",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "密码",
+                    "type": "string"
+                },
+                "password_again": {
+                    "description": "确认密码",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用户名",
                     "type": "string"
                 }
             }

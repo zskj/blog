@@ -1,28 +1,30 @@
 basePath: /
 definitions:
-  models.Reg:
+  gin.Context:
     properties:
-      captcha_code:
-        description: 验证码
+      accepted:
+        items:
+          type: string
+        type: array
+      engine:
+        type: Engine
+      errors:
+        type: errorMsgs
+      handlers:
+        type: HandlersChain
+      index:
+        type: integer
+      keys:
+        additionalProperties: true
+        type: object
+      params:
+        type: Params
+      request:
         type: string
-      captcha_id:
-        description: 验证码Id
-        type: string
-      password:
-        description: 密码
-        type: string
-      password_again:
-        description: 确认密码
-        type: string
-      username:
-        description: 用户名
-        type: string
-    required:
-    - captcha_code
-    - captcha_id
-    - password
-    - password_again
-    - username
+      writer:
+        type: ResponseWriter
+      writermem:
+        type: responseWriter
     type: object
   schema.AuthSwag:
     properties:
@@ -45,6 +47,30 @@ definitions:
       old_password:
         description: 旧密码
         type: string
+    type: object
+  schema.Reg:
+    properties:
+      captcha_code:
+        description: 验证码
+        type: string
+      captcha_id:
+        description: 验证码Id
+        type: string
+      password:
+        description: 密码
+        type: string
+      password_again:
+        description: 确认密码
+        type: string
+      username:
+        description: 用户名
+        type: string
+    required:
+    - captcha_code
+    - captcha_id
+    - password
+    - password_again
+    - username
     type: object
 host: localhost:8000
 info:
@@ -210,7 +236,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/models.Reg'
+          $ref: '#/definitions/schema.Reg'
       produces:
       - application/json
       responses:
